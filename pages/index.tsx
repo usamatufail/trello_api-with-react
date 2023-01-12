@@ -3,8 +3,8 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  // 'CLxFvf2l'
-  const lists = await trelloClient.boards.getBoardLists({ id: 'CLxFvf2l' });
+  const board = await trelloClient.boards.getBoard({ id: 'yI4swIr3' });
+  const lists = await trelloClient.boards.getBoardLists({ id: 'yI4swIr3' });
   const allPromises = lists?.map((list) => {
     const cards = trelloClient.lists.getListCards({ id: list.id });
     return cards;
@@ -14,11 +14,12 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     props: {
       cards: cards.flat(),
       lists,
+      board,
     },
   };
 };
 
-export default function Home({ cards, lists }: { cards: any; lists: any }) {
+export default function Home({ board, lists, cards }: { board: any; lists: any; cards: any }) {
   return (
     <>
       <Head>
@@ -27,8 +28,19 @@ export default function Home({ cards, lists }: { cards: any; lists: any }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div className="flex items-start gap-[10px] p-4">
+      <main
+        className="p-4"
+        style={{
+          backgroundImage:
+            'url("https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2400x1600/d7ddba3d264f179f01cccb5de39c9312/photo-1646977934200-c86e5d609dad.jpg")',
+          backgroundPosition: '50%',
+          backgroundSize: 'cover',
+          minHeight: '100vh',
+          backgroundBlendMode: 'darken',
+        }}
+      >
+        <h1 className="text-white mb-[30px] font-bold text-[25px]">{board.name}</h1>
+        <div className="flex items-start gap-[10px]">
           {/* Lists for Board */}
           {lists?.map((list: any) => {
             // Get cards for this list
